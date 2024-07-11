@@ -1,3 +1,4 @@
+import 'package:events/fcm/notification_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
+NotificationServices notificationServices=NotificationServices();
 class _HomePageState extends State<HomePage> {
   Future<void> logout() async {
     try {
@@ -26,7 +27,18 @@ class _HomePageState extends State<HomePage> {
       // Show an error message to the user (optional)
     }
   }
-
+  late String userMail;
+  @override
+  void initState() {
+    userMail=FirebaseAuth.instance.currentUser!.email.toString();
+    notificationServices.requestNotificationPermission();
+    //notificationServices.isTokenRefresh();
+    notificationServices.firebaseInit();
+    notificationServices.getDeviceToken().then((val){
+      print("value$val");
+  });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         title: const Row(
           children: [
             SizedBox(width: 10.0),
-            Text('College Events'),
+            Text('MNNIT Pulse'),
           ],
         ),
 
@@ -46,12 +58,7 @@ class _HomePageState extends State<HomePage> {
            await logout();
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Implement search functionality for events
-            },
-          ),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,13 +67,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
         Navigator.push(context, MaterialPageRoute(builder: (c)=>AddEventPage()));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
           child: Column(
             children: [
-              featuredEventsCarousel(context),
-                  upcomingEventsList(context),
+
+             // featuredEventsCarousel(context),
+              upcomingEventsList(context),
             ],
           )
       ),

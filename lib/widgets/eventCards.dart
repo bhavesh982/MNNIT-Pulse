@@ -13,14 +13,6 @@ class _EventCardState extends State<EventCard> {
   @override
   void initState() {
     super.initState();
-    // Start automatic scrolling after a delay (adjust as needed)
-    Future.delayed(const Duration(seconds: 3), () {
-      _controller.animateTo(
-        _controller.position.maxScrollExtent,
-        duration: const Duration(seconds: 3),
-        curve: Curves.ease,
-      );
-    });
   }
 
   @override
@@ -30,6 +22,7 @@ class _EventCardState extends State<EventCard> {
       controller: _controller, // Assign the scroll controller
       shrinkWrap: true,
       defaultChild: const Center(child: LinearProgressIndicator()),
+
       query: FirebaseDatabase.instance.ref().root.child("events/clubs-name"),
       itemBuilder: (context, snapshot, animation, index) {
         return SizedBox(
